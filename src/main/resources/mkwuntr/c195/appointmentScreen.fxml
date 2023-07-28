@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="571.0" prefWidth="1012.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mkwuntr.c195.AppointmentScreenController">
+   <children>
+      <Label layoutX="399.0" layoutY="35.0" text="Appointments">
+         <font>
+            <Font size="26.0" />
+         </font>
+      </Label>
+      <TreeTableView layoutX="54.0" layoutY="112.0" prefHeight="338.0" prefWidth="902.0">
+        <columns>
+            <TreeTableColumn prefWidth="75.0" text="ID" />
+            <TreeTableColumn text="Title" />
+            <TreeTableColumn prefWidth="92.0" text="Description" />
+            <TreeTableColumn prefWidth="94.0" text="Location" />
+            <TreeTableColumn prefWidth="109.0" text="Contact" />
+            <TreeTableColumn prefWidth="76.0" text="Type" />
+            <TreeTableColumn prefWidth="64.0" text="Date" />
+            <TreeTableColumn prefWidth="84.0" text="Start Time" />
+            <TreeTableColumn prefWidth="69.0" text="End Time" />
+            <TreeTableColumn text="Customer ID" />
+            <TreeTableColumn prefWidth="78.0" text="User ID" />
+        </columns>
+      </TreeTableView>
+      <Button fx:id="addButton" layoutX="646.0" layoutY="504.0" mnemonicParsing="false" onAction="#handleAddClick" text="Add" />
+      <Button fx:id="modifyButton" layoutX="707.0" layoutY="504.0" mnemonicParsing="false" onAction="#handleModifyClick" text="Modify" />
+      <Button fx:id="deleteButton" layoutX="787.0" layoutY="504.0" mnemonicParsing="false" onAction="#handleDeleteClick" text="Delete" />
+      <Button fx:id="exitButton" layoutX="859.0" layoutY="504.0" mnemonicParsing="false" onAction="#handleExitClick" text="Exit" />
+      <RadioButton layoutX="54.0" layoutY="466.0" mnemonicParsing="false" text="Week" />
+      <RadioButton layoutX="226.0" layoutY="467.0" mnemonicParsing="false" text="All Dates" />
+      <RadioButton layoutX="141.0" layoutY="467.0" mnemonicParsing="false" text="Month" />
+   </children>
+</AnchorPane>

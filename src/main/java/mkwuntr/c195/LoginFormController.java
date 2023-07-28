@@ -3,8 +3,13 @@ package mkwuntr.c195;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.time.ZoneId;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -61,8 +66,28 @@ public class LoginFormController {
             System.out.println(errorMessage);
         } else {
             // Proceed with login logic
+
+            // Assume login is successful, then open the main screen
+            try {
+                // Load the FXML file for the main screen
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("mainScreen.fxml"));
+                Parent mainScreenRoot = loader.load();
+
+                // Create a new stage for the main screen
+                Stage mainScreenStage = new Stage();
+                mainScreenStage.setTitle("Main Screen");
+                mainScreenStage.setScene(new Scene(mainScreenRoot));
+                mainScreenStage.show();
+
+                // Close the current login stage
+                Stage loginStage = (Stage) usernameTextField.getScene().getWindow();
+                loginStage.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
+
 
     @FXML
     private void handleLoginClick() {
@@ -74,9 +99,14 @@ public class LoginFormController {
 
     }
 
+    /**
+     * This method handles the action of the Exit button.
+     * When clicked, it closes the application.
+     */
     @FXML
     private void handleExitClick() {
-
+        Stage stage = (Stage) exitButton.getScene().getWindow();
+        stage.close();
     }
 
     @FXML

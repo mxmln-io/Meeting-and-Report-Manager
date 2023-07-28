@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="561.0" prefWidth="919.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mkwuntr.c195.CustomerScreenController">
+   <children>
+      <Label layoutX="404.0" layoutY="41.0" text="Customers">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <TableView layoutX="36.0" layoutY="88.0" prefHeight="378.0" prefWidth="846.0">
+        <columns>
+            <TableColumn prefWidth="75.0" text="ID" />
+            <TableColumn prefWidth="103.0" text="Name" />
+            <TableColumn prefWidth="144.0" text="Address" />
+            <TableColumn prefWidth="118.0" text="State/Province" />
+            <TableColumn prefWidth="119.0" text="Country" />
+            <TableColumn prefWidth="127.0" text="Postal Code" />
+            <TableColumn prefWidth="159.0" text="Phone Number" />
+        </columns>
+      </TableView>
+      <Button fx:id="addButton" layoutX="628.0" layoutY="505.0" mnemonicParsing="false" onAction="#handleAddClick" text="Add" />
+      <Button fx:id="modifyButton" layoutX="687.0" layoutY="505.0" mnemonicParsing="false" onAction="#handleModifyClick" text="Modify" />
+      <Button fx:id="deleteButton" layoutX="757.0" layoutY="505.0" mnemonicParsing="false" onAction="#handleDeleteClick" text="Delete" />
+      <Button fx:id="exitButton" layoutX="828.0" layoutY="505.0" mnemonicParsing="false" onAction="#handleExitClick" text="Exit" />
+   </children>
+</AnchorPane>
