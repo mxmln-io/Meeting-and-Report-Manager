@@ -1,13 +1,19 @@
 package mkwuntr.c195;
 
+import dataaccessobjects.AppointmentDAO;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import model.Appointment;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 public class MainScreenController {
 
@@ -24,8 +30,33 @@ public class MainScreenController {
     private Button signOutButton;
 
     @FXML
-    public void initialize() {
+    public void initialize() throws SQLException {
+        checkForUpcomingAppointments();
+    }
 
+    private void checkForUpcomingAppointments() throws SQLException {
+        AppointmentDAO appointmentDAO = new AppointmentDAO();
+
+        // Fetch the upcoming appointment within the next 15 minutes.
+        Optional<Appointment> upcomingAppointment = appointmentDAO.getAllAppointmentsObservable().stream()
+                .filter(appointment -> appointment.getStartDateTime().isAfter(LocalDateTime.now()) &&
+                        appointment.getStartDateTime().isBefore(LocalDateTime.now().plusMinutes(15)))
+                .findFirst();
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        if (upcomingAppointment.isPresent()) {
+            // If there's an upcoming appointment, show an alert with its details.
+            alert.setTitle("Upcoming Appointment Alert");
+            alert.setHeaderText("Upcoming Appointment Alert");
+            alert.setContentText("You have an appointment with ID " + upcomingAppointment.get().getId()
+                    + " starting at " + upcomingAppointment.get().getStartDateTime() + " within the next 15 minutes.");
+        } else {
+            // If there's no upcoming appointment, show a different alert.
+            alert.setTitle("No Upcoming Appointments");
+            alert.setHeaderText("No Upcoming Appointments");
+            alert.setContentText("You have no appointments within the next 15 minutes.");
+        }
+        alert.showAndWait();
     }
 
     @FXML

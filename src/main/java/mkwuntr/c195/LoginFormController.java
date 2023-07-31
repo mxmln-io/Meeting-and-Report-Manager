@@ -1,17 +1,23 @@
 package mkwuntr.c195;
 
+import dataaccessobjects.UserDAO;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import model.User;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.ZoneId;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class LoginFormController {
@@ -33,24 +39,45 @@ public class LoginFormController {
     @FXML
     private Label locationLabel;
 
+    @FXML
+    private Label languageLabel;
+
+    @FXML
+    private Label usernameLabel;
+
+    @FXML
+    private Label passwordLabel;
+
+    @FXML
     private ResourceBundle resources;
 
+    @FXML
+    private UserDAO userDAO = new UserDAO();
+
+    @FXML
+    private Locale currentLocale;
+
+    @FXML
     public void initialize() {
         // Get the default locale to determine the user's computer language setting
-        Locale defaultLocale = Locale.getDefault();
+        currentLocale = Locale.getDefault();
+        updateView();
+    }
 
-        // Load the appropriate resource bundle based on the default locale
-        resources = ResourceBundle.getBundle("LoginForm", defaultLocale);
+    private void updateView() {
+        resources = ResourceBundle.getBundle("LoginForm", currentLocale);
 
-        // Set the location label text based on the user's ZoneId
         ZoneId zoneId = ZoneId.systemDefault();
         locationLabel.setText(resources.getString("location") + ": " + zoneId.getId());
+        languageLabel.setText(resources.getString("language_label"));
+        usernameLabel.setText(resources.getString("username_label"));
+        passwordLabel.setText(resources.getString("password_label"));
 
-        // Bind the toggle button's text to dynamically update the language setting
-        StringBinding languageTextBinding = Bindings.when(languageToggleButton.selectedProperty())
-                .then(resources.getString("english"))
-                .otherwise(resources.getString("french"));
-        languageToggleButton.textProperty().bind(languageTextBinding);
+        usernameTextField.setPromptText(resources.getString("username"));
+        passwordTextField.setPromptText(resources.getString("password"));
+        loginButton.setText(resources.getString("login"));
+        exitButton.setText(resources.getString("exit"));
+        languageToggleButton.setText(resources.getString("toggle"));
     }
 
     @FXML
@@ -62,41 +89,58 @@ public class LoginFormController {
         if (username.isEmpty() || password.isEmpty()) {
             // Display the error message based on the current language setting
             String errorMessage = resources.getString("error");
-            // You can show the error message in a dialog or update a label on the form
-            System.out.println(errorMessage);
+            displayErrorMessage(errorMessage); // Use the displayErrorMessage method to show an error dialog
         } else {
             // Proceed with login logic
-
-            // Assume login is successful, then open the main screen
             try {
-                // Load the FXML file for the main screen
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("mainScreen.fxml"));
-                Parent mainScreenRoot = loader.load();
+                ObservableList<User> users = userDAO.getAllUsersObservable();
+                boolean isAuthenticated = users.stream()
+                        .anyMatch(user -> user.getName().equals(username) && user.getPassword().equals(password));
 
-                // Create a new stage for the main screen
-                Stage mainScreenStage = new Stage();
-                mainScreenStage.setTitle("Main Screen");
-                mainScreenStage.setScene(new Scene(mainScreenRoot));
-                mainScreenStage.show();
-
-                // Close the current login stage
-                Stage loginStage = (Stage) usernameTextField.getScene().getWindow();
-                loginStage.close();
-            } catch (IOException e) {
+                if (isAuthenticated) {
+                    // Login is successful, continue to next screen or operations
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("mainScreen.fxml"), resources);
+                        Parent root = loader.load();
+                        Stage loginStage = (Stage) loginButton.getScene().getWindow();
+                        Stage mainStage = new Stage();
+                        mainStage.setScene(new Scene(root));
+                        mainStage.show();
+                        loginStage.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        String errorMessage = resources.getString("error_loading_scene");
+                        displayErrorMessage(errorMessage);
+                    }
+                } else {
+                    // Invalid credentials, display an error message
+                    String errorMessage = resources.getString("login_error");
+                    displayErrorMessage(errorMessage);
+                }
+            } catch (SQLException e) {
+                // Handle SQL exception
                 e.printStackTrace();
+                String errorMessage = resources.getString("database_error");
+                displayErrorMessage(errorMessage);
             }
         }
     }
 
 
+
     @FXML
     private void handleLoginClick() {
-
+        handleLogin();
     }
 
     @FXML
     private void handleToggleClick() {
-
+        if (currentLocale.getLanguage().equals("en")) {
+            currentLocale = new Locale("fr");
+        } else {
+            currentLocale = new Locale("en");
+        }
+        updateView();
     }
 
     /**

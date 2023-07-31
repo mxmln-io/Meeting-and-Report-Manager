@@ -11,21 +11,20 @@
             <Font size="26.0" />
          </font>
       </Label>
-      <TreeTableView layoutX="54.0" layoutY="112.0" prefHeight="338.0" prefWidth="902.0">
+      <TableView fx:id="appointmentTable" layoutX="54.0" layoutY="112.0" prefHeight="338.0" prefWidth="902.0">
         <columns>
-            <TreeTableColumn prefWidth="75.0" text="ID" />
-            <TreeTableColumn text="Title" />
-            <TreeTableColumn prefWidth="92.0" text="Description" />
-            <TreeTableColumn prefWidth="94.0" text="Location" />
-            <TreeTableColumn prefWidth="109.0" text="Contact" />
-            <TreeTableColumn prefWidth="76.0" text="Type" />
-            <TreeTableColumn prefWidth="64.0" text="Date" />
-            <TreeTableColumn prefWidth="84.0" text="Start Time" />
-            <TreeTableColumn prefWidth="69.0" text="End Time" />
-            <TreeTableColumn text="Customer ID" />
-            <TreeTableColumn prefWidth="78.0" text="User ID" />
+            <TableColumn fx:id="idColumn" prefWidth="75.0" text="ID" />
+            <TableColumn fx:id="titleColumn" text="Title" />
+            <TableColumn fx:id="descriptionColumn" prefWidth="92.0" text="Description" />
+            <TableColumn fx:id="locationColumn" prefWidth="94.0" text="Location" />
+            <TableColumn fx:id="typeColumn" prefWidth="76.0" text="Type" />
+            <TableColumn fx:id="startTimeColumn" prefWidth="84.0" text="Start Time" />
+            <TableColumn fx:id="endTimeColumn" prefWidth="69.0" text="End Time" />
+            <TableColumn fx:id="customerIdColumn" text="Customer ID" />
+            <TableColumn fx:id="userIdColumn" prefWidth="78.0" text="User ID" />
+            <TableColumn fx:id="contactIdColumn" prefWidth="109.0" text="Contact" />
         </columns>
-      </TreeTableView>
+      </TableView>
       <Button fx:id="addButton" layoutX="646.0" layoutY="504.0" mnemonicParsing="false" onAction="#handleAddClick" text="Add" />
       <Button fx:id="modifyButton" layoutX="707.0" layoutY="504.0" mnemonicParsing="false" onAction="#handleModifyClick" text="Modify" />
       <Button fx:id="deleteButton" layoutX="787.0" layoutY="504.0" mnemonicParsing="false" onAction="#handleDeleteClick" text="Delete" />
