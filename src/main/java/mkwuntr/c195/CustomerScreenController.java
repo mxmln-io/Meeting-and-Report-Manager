@@ -14,12 +14,16 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import model.Appointment;
 import model.Customer;
-import model.Division;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Optional;
 
+/**
+ * Controller for the CustomerScreen.
+ * Handles actions associated with the CustomerScreen, including displaying customers,
+ * adding, modifying, and deleting customers.
+ */
 public class CustomerScreenController {
 
     @FXML
@@ -70,11 +74,17 @@ public class CustomerScreenController {
     @FXML
     private DivisionDAO divisionDAO = new DivisionDAO();
 
-    @FXML
-    private ObservableList<Division> divisionList;
-
+    /**
+     * Initializes the CustomerScreenController.
+     * This method sets up the table columns and initial set of customers.
+     * It uses lambda expressions to populate the state and country columns based on
+     * the division ID from the Customer object.
+     *
+     * @throws SQLException if database operations fail.
+     */
     @FXML
     public void initialize() throws SQLException {
+        //Populate columns
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         addressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
@@ -82,7 +92,7 @@ public class CustomerScreenController {
         phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
         divisionIdColumn.setCellValueFactory(new PropertyValueFactory<>("divisionId"));
 
-        //State and Country need to be populated based on the First Level Division ID
+        //State and Country populated based on the First Level Division ID using lambda expressions
         stateColumn.setCellValueFactory(cellData -> {
             int divisionId = cellData.getValue().getDivisionId();
             try {
@@ -110,21 +120,21 @@ public class CustomerScreenController {
         customerTableView.setItems(customerList);
     }
 
-
+    /**
+     * Handles the "Add" button click event.
+     * This method opens the "Add Customer" screen.
+     */
     @FXML
     private void handleAddClick(){
         try {
-            // Load the FXML file for the Add Customer page
             FXMLLoader loader = new FXMLLoader(getClass().getResource("addCustomer.fxml"));
             Parent addCustomerRoot = loader.load();
 
-            // Create a new stage for the Add Customer page
             Stage addCustomerStage = new Stage();
             addCustomerStage.setTitle("Add Customer");
             addCustomerStage.setScene(new Scene(addCustomerRoot));
             addCustomerStage.show();
 
-            // Get the current stage and close it
             Stage currentStage = (Stage) addButton.getScene().getWindow();
             currentStage.close();
 
@@ -133,6 +143,10 @@ public class CustomerScreenController {
         }
     }
 
+    /**
+     * Handles the "Modify" button click event.
+     * This method loads the selected customer into the "Modify Customer" screen.
+     */
     @FXML
     private void handleModifyClick(){
         try {
@@ -149,15 +163,13 @@ public class CustomerScreenController {
                 return;
             }
 
-            // Load the FXML file for the Modify Customer page
+            //Load Modify Customer screen
             FXMLLoader loader = new FXMLLoader(getClass().getResource("modifyCustomer.fxml"));
             Parent modifyCustomerRoot = loader.load();
 
-            // Get the controller and pass the selected appointment
             ModifyCustomerController controller = loader.getController();
             controller.setCustomer(selectedCustomer);
 
-            // Create a new stage for the Modify Appointments page
             Stage modifyCustomerStage = new Stage();
             modifyCustomerStage.setTitle("Modify Customer");
             modifyCustomerStage.setScene(new Scene(modifyCustomerRoot));
@@ -173,9 +185,14 @@ public class CustomerScreenController {
         }
     }
 
+    /**
+     * Handles the "Delete" button click event.
+     * This method deletes the selected customer, and if the customer has any associated
+     * appointments, those are deleted as well.
+     */
     @FXML
     private void handleDeleteClick(){
-        // Get the selected customer from the TableView
+        // Get the selected customer
         Customer selectedCustomer = customerTableView.getSelectionModel().getSelectedItem();
 
         // If no customer is selected, display an alert
@@ -237,7 +254,10 @@ public class CustomerScreenController {
         }
     }
 
-
+    /**
+     * Handles the "Exit" button click event.
+     * This method closes the current screen.
+     */
     @FXML
     private void handleExitClick(){
         Stage stage = (Stage) exitButton.getScene().getWindow();

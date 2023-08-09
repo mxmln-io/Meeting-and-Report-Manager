@@ -1,12 +1,10 @@
 package mkwuntr.c195;
 
-import dataaccessobjects.AppointmentDAO;
 import dataaccessobjects.ContactDAO;
 import dataaccessobjects.ReportDAO;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -17,8 +15,10 @@ import model.Contact;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.List;
 
+/**
+ * Controller for managing and displaying various reports in the application.
+ */
 public class ReportsController {
 
     @FXML
@@ -88,6 +88,10 @@ public class ReportsController {
     @FXML
     private ReportDAO reportDAO = new ReportDAO();
 
+    /**
+     * Initializes the reports controller by populating tables and other UI elements.
+     * @throws SQLException if there is an error fetching data from the database.
+     */
     @FXML
     public void initialize() throws SQLException {
         populateAppointmentTypeTable();
@@ -96,6 +100,11 @@ public class ReportsController {
         populateContactMenuButton();
     }
 
+    /**
+     * Populates the appointment type table with data.
+     * @throws SQLException if there is an error fetching data from the database.
+     */
+    @FXML
     private void populateAppointmentTypeTable() throws SQLException {
         ObservableList<Pair<String, Integer>> typesData = reportDAO.getAppointmentsCountByType();
 
@@ -105,7 +114,11 @@ public class ReportsController {
         appointmentTypeTable.setItems(typesData);
     }
 
-
+    /**
+     * Populates the appointment month table with data.
+     * @throws SQLException if there is an error fetching data from the database.
+     */
+    @FXML
     private void populateAppointmentMonthTable() throws SQLException {
         ObservableList<Pair<String, Integer>> monthsData = reportDAO.getAppointmentsCountByMonth();
 
@@ -115,7 +128,11 @@ public class ReportsController {
         appointmentMonthTable.setItems(monthsData);
     }
 
-
+    /**
+     * Populates the appointment customer table with data.
+     * @throws SQLException if there is an error fetching data from the database.
+     */
+    @FXML
     private void populateAppointmentCustomerTable() throws SQLException {
         ObservableList<Pair<String, Integer>> customersData = reportDAO.getAppointmentsCountByCustomer();
 
@@ -125,7 +142,11 @@ public class ReportsController {
         appointmentCustomerTable.setItems(customersData);
     }
 
-
+    /**
+     * Populates the contact menu button with available contacts.
+     * @throws SQLException if there is an error fetching data from the database.
+     */
+    @FXML
     private void populateContactMenuButton() throws SQLException {
         ObservableList<Contact> contacts = contactDAO.getAllContactsObservable();
 
@@ -145,7 +166,12 @@ public class ReportsController {
         }
     }
 
-
+    /**
+     * Updates the contact appointments table with appointments associated with a specific contact.
+     * @param contactId the ID of the contact.
+     * @throws SQLException if there is an error fetching data from the database.
+     */
+    @FXML
     private void updateContactAppointmentsTable(int contactId) throws SQLException {
         ObservableList<Appointment> appointmentsForContact = reportDAO.getAppointmentsByContact(contactId);
 
@@ -163,7 +189,9 @@ public class ReportsController {
         contactAppointmentTable.setItems(appointmentsForContact);
     }
 
-
+    /**
+     * Handles the action of the exit button click, closing the current stage.
+     */
     @FXML
     private void handleExitClick(){
         Stage stage = (Stage) exitButton.getScene().getWindow();

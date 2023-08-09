@@ -1,9 +1,6 @@
 package mkwuntr.c195;
 
 import dataaccessobjects.UserDAO;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.StringBinding;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,12 +14,14 @@ import java.io.*;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
+/**
+ * Controller for the Login Form.
+ */
 public class LoginFormController {
+
     @FXML
     private TextField usernameTextField;
 
@@ -59,13 +58,19 @@ public class LoginFormController {
     @FXML
     private Locale currentLocale;
 
+    /**
+     * Initializes the form with locale-based content.
+     */
     @FXML
     public void initialize() {
-        // Get the default locale to determine the user's computer language setting
         currentLocale = Locale.getDefault();
         updateView();
     }
 
+    /**
+     * Updates the form elements based on the currently selected locale.
+     */
+    @FXML
     private void updateView() {
         resources = ResourceBundle.getBundle("LoginForm", currentLocale);
 
@@ -82,6 +87,9 @@ public class LoginFormController {
         languageToggleButton.setText(resources.getString("toggle"));
     }
 
+    /**
+     * Handles login logic.
+     */
     @FXML
     private void handleLogin() {
         String username = usernameTextField.getText();
@@ -95,12 +103,9 @@ public class LoginFormController {
                 ObservableList<User> users = userDAO.getAllUsersObservable();
                 boolean isAuthenticated = users.stream()
                         .anyMatch(user -> user.getName().equals(username) && user.getPassword().equals(password));
-
-                // Record the login attempt
                 recordLoginAttempt(username, isAuthenticated);
 
                 if (isAuthenticated) {
-                    // Login is successful, continue to next screen or operations
                     try {
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("mainScreen.fxml"), resources);
                         Parent root = loader.load();
@@ -131,6 +136,9 @@ public class LoginFormController {
         handleLogin();
     }
 
+    /**
+     * Toggles the form's language between English and French.
+     */
     @FXML
     private void handleToggleClick() {
         if (currentLocale.getLanguage().equals("en")) {
@@ -142,8 +150,7 @@ public class LoginFormController {
     }
 
     /**
-     * This method handles the action of the Exit button.
-     * When clicked, it closes the application.
+     * Closes the application.
      */
     @FXML
     private void handleExitClick() {
@@ -151,6 +158,11 @@ public class LoginFormController {
         stage.close();
     }
 
+    /**
+     * Displays an error message in a pop-up alert.
+     *
+     * @param message The error message to display.
+     */
     @FXML
     private void displayErrorMessage(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -160,6 +172,12 @@ public class LoginFormController {
         alert.showAndWait();
     }
 
+    /**
+     * Records the login attempt, with date, time, and success/failure.
+     *
+     * @param username The username attempted.
+     * @param success  Boolean indicating if the attempt was successful.
+     */
     private void recordLoginAttempt(String username, boolean success) {
         String appDir = System.getProperty("user.dir");
         String filePath = appDir + File.separator + "login_activity.txt";
@@ -167,17 +185,12 @@ public class LoginFormController {
         try (FileWriter writer = new FileWriter(filePath, true);
              BufferedWriter bufferedWriter = new BufferedWriter(writer);
              PrintWriter out = new PrintWriter(bufferedWriter)) {
-
-            String result = success ? "Successful" : "Failed";
-            String entry = String.format("%s - Login %s for user: %s%n", LocalDateTime.now(), result, username);
-            out.println(entry);
+                String result = success ? "Successful" : "Failed";
+                String entry = String.format("%s - Login %s for user: %s%n", LocalDateTime.now(), result, username);
+                out.println(entry);
 
         } catch (IOException e) {
             e.printStackTrace();
-
         }
     }
-
-
 }
-

@@ -13,7 +13,18 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+/**
+ * Data access object (DAO) for handling report-related database operations.
+ */
 public class ReportDAO {
+
+    /**
+     * Parses the given ResultSet to create a list of Appointment objects.
+     *
+     * @param resultSet ResultSet object from a query
+     * @return ObservableList of Appointment objects
+     * @throws SQLException if database operation fails
+     */
     private ObservableList<Appointment> createAppointmentsFromResultSet(ResultSet resultSet) throws SQLException {
         ObservableList<Appointment> appointmentList = FXCollections.observableArrayList();
 
@@ -42,6 +53,13 @@ public class ReportDAO {
         return appointmentList;
     }
 
+    /**
+     * Retrieves an observable list of appointments associated with a given contact ID.
+     *
+     * @param contactIdSearch ID of the contact
+     * @return ObservableList containing appointments of the specified contact
+     * @throws SQLException if database query fails
+     */
     public ObservableList<Appointment> getAppointmentsByContact(int contactIdSearch) throws SQLException {
         String query =  "SELECT * FROM appointments WHERE Contact_ID = ?";
         PreparedStatement preparedStatement = JDBC.openConnection().prepareStatement(query);
@@ -50,6 +68,12 @@ public class ReportDAO {
         return createAppointmentsFromResultSet(resultSet);
     }
 
+    /**
+     * Retrieves the count of appointments grouped by their type.
+     *
+     * @return ObservableList of pairs where the key is the type of the appointment and the value is the count
+     * @throws SQLException if database query fails
+     */
     public ObservableList<Pair<String, Integer>> getAppointmentsCountByType() throws SQLException {
         String query =  "SELECT Type, COUNT(*) as Total FROM appointments GROUP BY Type";
         PreparedStatement preparedStatement = JDBC.openConnection().prepareStatement(query);
@@ -64,6 +88,12 @@ public class ReportDAO {
         return typeCounts;
     }
 
+    /**
+     * Retrieves the count of appointments grouped by the month of their start date.
+     *
+     * @return ObservableList of pairs where the key is the month name and the value is the count
+     * @throws SQLException if database query fails
+     */
     public ObservableList<Pair<String, Integer>> getAppointmentsCountByMonth() throws SQLException {
         String query =  "SELECT MONTHNAME(Start) as Month, COUNT(*) as Total \n" +
                 "FROM appointments \n" +
@@ -80,6 +110,12 @@ public class ReportDAO {
         return monthCounts;
     }
 
+    /**
+     * Retrieves the count of appointments grouped by customer.
+     *
+     * @return ObservableList of pairs where the key is the customer's name and the value is the count
+     * @throws SQLException if database query fails
+     */
     public ObservableList<Pair<String, Integer>> getAppointmentsCountByCustomer() throws SQLException {
         String query =  "SELECT c.Customer_Name, COUNT(*) as Total FROM appointments a JOIN customers c ON a.Customer_ID = c.Customer_ID GROUP BY a.Customer_ID";
         PreparedStatement preparedStatement = JDBC.openConnection().prepareStatement(query);

@@ -9,8 +9,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Data access object (DAO) for handling division-related database operations.
+ */
 public class DivisionDAO {
 
+    /**
+     * Retrieves an observable list of all divisions from the database.
+     *
+     * @return ObservableList containing all divisions
+     * @throws SQLException if database query fails
+     */
     public ObservableList<Division> getAllDivisionsObservable() throws SQLException {
         ObservableList<Division> divisionList = FXCollections.observableArrayList();
 
@@ -31,6 +40,13 @@ public class DivisionDAO {
         return divisionList;
     }
 
+    /**
+     * Retrieves a division from the database based on the provided division ID.
+     *
+     * @param id ID of the division to be retrieved
+     * @return Division object if found, otherwise null
+     * @throws SQLException if database operation fails
+     */
     public Division getDivisionById(int id) throws SQLException {
         String query = "SELECT * FROM first_level_divisions WHERE Division_ID = ?";
         PreparedStatement preparedStatement = JDBC.connection.prepareStatement(query);
@@ -48,6 +64,14 @@ public class DivisionDAO {
         return null;
     }
 
+    /**
+     * Retrieves the name of the country associated with a given division ID.
+     * Note: This method uses hardcoded values and could be improved by a direct database query.
+     *
+     * @param divisionId ID of the division
+     * @return Name of the associated country, or error strings if not found
+     * @throws SQLException if database operation fails
+     */
     public String getCountryNameByDivisionId(int divisionId) throws SQLException {
         Division division = getDivisionById(divisionId);
         if (division != null) {
@@ -67,6 +91,13 @@ public class DivisionDAO {
         return "Unknown Division ID";
     }
 
+    /**
+     * Retrieves an observable list of divisions associated with a given country ID.
+     *
+     * @param countryId ID of the country
+     * @return ObservableList containing divisions of the specified country
+     * @throws SQLException if database query fails
+     */
     public ObservableList<Division> getDivisionsByCountryId(int countryId) throws SQLException {
         ObservableList<Division> divisionList = FXCollections.observableArrayList();
 
@@ -88,6 +119,13 @@ public class DivisionDAO {
         return divisionList;
     }
 
+    /**
+     * Retrieves the ID of a division based on its name.
+     *
+     * @param divisionName Name of the division
+     * @return ID of the division if found, -1 otherwise
+     * @throws SQLException if database operation fails
+     */
     public int getDivisionIdByDivisionName(String divisionName) throws SQLException {
         String query = "SELECT Division_ID FROM first_level_divisions WHERE Division = ?";
         PreparedStatement preparedStatement = JDBC.connection.prepareStatement(query);

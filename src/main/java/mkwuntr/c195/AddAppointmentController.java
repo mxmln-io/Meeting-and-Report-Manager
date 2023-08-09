@@ -28,6 +28,10 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
+/**
+ * Controller for the Add Appointment screen. This screen is responsible for
+ * managing and saving new appointments to the database.
+ */
 public class AddAppointmentController {
     @FXML
     private TextField idTextField;
@@ -59,12 +63,14 @@ public class AddAppointmentController {
     private Button cancelButton;
     @FXML
     private AppointmentDAO appointmentDAO = new AppointmentDAO();
-    @FXML
-    private CustomerDAO customerDAO = new CustomerDAO();
 
     @FXML
     private ObservableList<Customer> customerObservableList;
 
+    /**
+     * Initializes the controller. This method sets up the necessary data
+     * and listeners for the UI components when the screen is first loaded.
+     */
     @FXML
     public void initialize() throws SQLException {
         try {
@@ -111,6 +117,10 @@ public class AddAppointmentController {
         }
     }
 
+    /**
+     * Handles the "Save" button click event. This method checks input data
+     * for correctness, and if valid, saves the appointment.
+     */
     @FXML
     private void handleSaveClick() throws IOException, SQLException {
         // Check for empty fields
@@ -165,6 +175,10 @@ public class AddAppointmentController {
         saveAppointment();
     }
 
+    /**
+     * Handles the "Cancel" button click event. This method closes the
+     * current screen and returns to the main appointment screen.
+     */
     @FXML
     private void handleCancelClick() throws IOException {
         Stage stage = (Stage) cancelButton.getScene().getWindow();
@@ -181,6 +195,13 @@ public class AddAppointmentController {
         stage2.show();
     }
 
+    /**
+     * Checks if a given appointment time range is within the business hours.
+     *
+     * @param startDateTime The start time of the appointment.
+     * @param endDateTime   The end time of the appointment.
+     * @return True if within business hours, false otherwise.
+     */
     public boolean isWithinBusinessHours(LocalDateTime startDateTime, LocalDateTime endDateTime) {
         ZoneId easternTimeZone = ZoneId.of("America/New_York");
         ZoneId localTimeZone = ZoneId.systemDefault();
@@ -197,8 +218,15 @@ public class AddAppointmentController {
         return !startDateTimeLocal.toLocalTime().isBefore(businessStartTimeLocal) && !endDateTimeLocal.toLocalTime().isAfter(businessEndTimeLocal);
     }
 
-
-
+    /**
+     * Checks if an appointment is overlapping with other appointments
+     * for the specified customer.
+     *
+     * @param customerId   The customer ID to check.
+     * @param newStartTime The start time of the new appointment.
+     * @param newEndTime   The end time of the new appointment.
+     * @return True if overlapping, false otherwise.
+     */
     public boolean isOverlapping(Integer customerId, LocalDateTime newStartTime, LocalDateTime newEndTime) throws SQLException {
         AppointmentDAO appointmentDAO = new AppointmentDAO();
         ObservableList<Appointment> existingAppointments = appointmentDAO.getAllAppointmentsByCustomer(customerId);
@@ -213,6 +241,11 @@ public class AddAppointmentController {
         return false;
     }
 
+    /**
+     * Displays an authentication dialog to confirm a user's credentials.
+     *
+     * @return True if the user's credentials are verified, false otherwise.
+     */
     public boolean authenticate() throws SQLException {
         // Create a custom dialog.
         Dialog<Pair<String, String>> dialog = new Dialog<>();
@@ -266,16 +299,11 @@ public class AddAppointmentController {
         return false;
     }
 
-
-    public String convertTimeToString(LocalTime time) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        return time.format(formatter);
-    }
-
-    public String convertIntegerToString(Integer integer) {
-        return String.valueOf(integer);
-    }
-
+    /**
+     * Saves a new appointment to the database after user authentication.
+     * Closes the current screen and returns to the main appointment screen
+     * after successful save.
+     */
     public void saveAppointment() throws SQLException, IOException {
         // First, authenticate the user
         if (!authenticate()) {
@@ -301,24 +329,18 @@ public class AddAppointmentController {
 
         Appointment newAppointment = new Appointment(id, title, description, location, type, startDateTime, endDateTime, customerId, userId, contactId);
 
-        // Then, add the new appointment to the database
         appointmentDAO.addAppointment(newAppointment);
 
-        // Close the window after saving
         Stage currentStage = (Stage) saveButton.getScene().getWindow();
         currentStage.close();
 
-        // Load the AppointmentScreen.fxml again
         FXMLLoader loader = new FXMLLoader(getClass().getResource("appointmentScreen.fxml"));
         Parent AppointmentScreenRoot = loader.load();
 
-        // Create a new stage for the AppointmentScreen.fxml
         Stage AppointmentScreenStage = new Stage();
         AppointmentScreenStage.setTitle("Appointment Screen");
         AppointmentScreenStage.setScene(new Scene(AppointmentScreenRoot));
         AppointmentScreenStage.show();
 
     }
-
-
 }

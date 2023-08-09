@@ -18,6 +18,9 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+/**
+ * Controller for the Appointment Screen which handles the CRUD operations for appointments.
+ */
 public class AppointmentScreenController {
 
     @FXML
@@ -86,8 +89,17 @@ public class AppointmentScreenController {
     @FXML
     private ToggleGroup radioButtonGroup = new ToggleGroup();
 
+    /**
+     * Initializes the AppointmentScreenController.
+     * This method sets up the table columns, radio buttons, and initial set of appointments.
+     * It uses a lambda expression to efficiently populate the contact name column
+     * based on the contact ID from the Appointment object.
+     *
+     * @throws SQLException if database operations fail.
+     */
     @FXML
     public void initialize() throws SQLException {
+        //Initialize Appointment columns
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
@@ -97,6 +109,8 @@ public class AppointmentScreenController {
         endTimeColumn.setCellValueFactory(new PropertyValueFactory<>("endDateTime"));
         customerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
         userIdColumn.setCellValueFactory(new PropertyValueFactory<>("userId"));
+
+        //Lambda expression
         contactNameColumn.setCellValueFactory(cellData -> {
             int contactId = cellData.getValue().getContactId();
             try {
@@ -147,6 +161,11 @@ public class AppointmentScreenController {
         filterAppointments();
     }
 
+    /**
+     * Filters the appointments in the table based on the selected radio button.
+     *
+     * @throws SQLException if database operations fail.
+     */
     private void filterAppointments() throws SQLException {
         if (allDatesRadioButton.isSelected()) {
             appointmentList = appointmentDAO.getAllAppointmentsObservable();
@@ -158,20 +177,20 @@ public class AppointmentScreenController {
         appointmentTable.setItems(appointmentList);
     }
 
+    /**
+     * Opens the "Add Appointment" screen.
+     */
     @FXML
     private void handleAddClick(){
         try {
-            // Load the FXML file for the Appointments page
             FXMLLoader loader = new FXMLLoader(getClass().getResource("addAppointment.fxml"));
             Parent addAppointmentRoot = loader.load();
 
-            // Create a new stage for the Appointments page
             Stage addAppointmentStage = new Stage();
             addAppointmentStage.setTitle("Appointments");
             addAppointmentStage.setScene(new Scene(addAppointmentRoot));
             addAppointmentStage.show();
 
-            // Get the current stage and close it
             Stage currentStage = (Stage) addButton.getScene().getWindow();
             currentStage.close();
 
@@ -180,7 +199,10 @@ public class AppointmentScreenController {
         }
     }
 
-
+    /**
+     * Opens the "Modify Appointment" screen for the selected appointment.
+     * Displays an error alert if no appointment is selected.
+     */
     @FXML
     private void handleModifyClick(){
         try {
@@ -196,16 +218,13 @@ public class AppointmentScreenController {
                 alert.showAndWait();
                 return;
             }
-
-            // Load the FXML file for the Modify Appointments page
+            //Open Modify Appointments screen
             FXMLLoader loader = new FXMLLoader(getClass().getResource("modifyAppointment.fxml"));
             Parent modifyAppointmentRoot = loader.load();
 
-            // Get the controller and pass the selected appointment
             ModifyAppointmentController controller = loader.getController();
             controller.setAppointment(selectedAppointment);
 
-            // Create a new stage for the Modify Appointments page
             Stage modifyAppointmentStage = new Stage();
             modifyAppointmentStage.setTitle("Modify Appointments");
             modifyAppointmentStage.setScene(new Scene(modifyAppointmentRoot));
@@ -221,9 +240,13 @@ public class AppointmentScreenController {
         }
     }
 
+    /**
+     * Deletes the selected appointment from the table and the database.
+     * Displays error or confirmation alerts as needed.
+     */
     @FXML
     private void handleDeleteClick(){
-        // Get the selected appointment from the TableView
+        // Get the selected appointment
         Appointment selectedAppointment = appointmentTable.getSelectionModel().getSelectedItem();
 
         // If no appointment is selected, display an alert
@@ -254,7 +277,6 @@ public class AppointmentScreenController {
             // Delete the appointment from the database
             try {
                 appointmentDAO.deleteAppointment(selectedAppointment.getId());
-                // If successful, remove the appointment from the ObservableList
                 appointmentList.remove(selectedAppointment);
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -262,8 +284,9 @@ public class AppointmentScreenController {
         }
     }
 
-
-
+    /**
+     * Closes the appointment screen.
+     */
     @FXML
     private void handleExitClick(){
         Stage stage = (Stage) exitButton.getScene().getWindow();

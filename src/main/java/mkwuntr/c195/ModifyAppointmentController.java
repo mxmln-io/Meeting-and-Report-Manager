@@ -20,7 +20,6 @@ import model.Customer;
 import model.User;
 
 import java.io.IOException;
-import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -28,8 +27,11 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
+/**
+ * Controller for the ModifyAppointment screen.
+ * Allows the user to modify details of an existing appointment.
+ */
 public class ModifyAppointmentController {
 
     @FXML
@@ -60,6 +62,12 @@ public class ModifyAppointmentController {
     @FXML
     private ObservableList<Customer> customerObservableList;
 
+    /**
+     * Initializes the controller.
+     * <p>
+     * Sets up the Contact, User, and Customer dropdown menus, and the start and end time selectors.
+     * </p>
+     */
     @FXML
     public void initialize() throws SQLException {
 
@@ -102,7 +110,13 @@ public class ModifyAppointmentController {
         }
     }
 
-
+    /**
+     * Set the appointment details to the UI elements.
+     *
+     * @param appointment The appointment to set.
+     * @throws SQLException If there is a database access error.
+     */
+    @FXML
     public void setAppointment(Appointment appointment) throws SQLException {
         this.appointment = appointment;
 
@@ -133,6 +147,15 @@ public class ModifyAppointmentController {
 
     }
 
+    /**
+     * Handles the save button click.
+     * <p>
+     * Validates the input, checks for overlapping appointments, and business hours.
+     * </p>
+     *
+     * @throws IOException If there is an I/O error.
+     * @throws SQLException If there is a database access error.
+     */
     @FXML
     private void handleSaveClick() throws IOException, SQLException, IOException {
 
@@ -186,7 +209,12 @@ public class ModifyAppointmentController {
         saveAppointment();
     }
 
-
+    /**
+     * Handles the cancel button click.
+     * Returns the user to the Appointment Screen.
+     *
+     * @throws IOException If there is an I/O error.
+     */
     @FXML
     private void handleCancelClick() throws IOException {
         Stage stage = (Stage) cancelButton.getScene().getWindow();
@@ -203,6 +231,14 @@ public class ModifyAppointmentController {
         stage2.show();
     }
 
+    /**
+     * Checks if the appointment is within the business hours.
+     *
+     * @param startDateTime Start date and time of the appointment.
+     * @param endDateTime End date and time of the appointment.
+     * @return true if the appointment is within business hours, false otherwise.
+     */
+    @FXML
     private boolean isWithinBusinessHours(LocalDateTime startDateTime, LocalDateTime endDateTime) {
         ZoneId easternTimeZone = ZoneId.of("America/New_York");
         ZoneId localTimeZone = ZoneId.systemDefault();
@@ -219,8 +255,16 @@ public class ModifyAppointmentController {
         return !startDateTimeLocal.toLocalTime().isBefore(businessStartTimeLocal) && !endDateTimeLocal.toLocalTime().isAfter(businessEndTimeLocal);
     }
 
-
-
+    /**
+     * Checks if there is an overlapping appointment.
+     *
+     * @param customerId The customer ID for checking overlapping.
+     * @param newStartTime New appointment start time.
+     * @param newEndTime New appointment end time.
+     * @return true if there's an overlapping appointment, false otherwise.
+     * @throws SQLException If there is a database access error.
+     */
+    @FXML
     private boolean isOverlapping(Integer customerId, LocalDateTime newStartTime, LocalDateTime newEndTime) throws SQLException {
         AppointmentDAO appointmentDAO = new AppointmentDAO();
         ObservableList<Appointment> existingAppointments = appointmentDAO.getAllAppointmentsByCustomer(customerId);
@@ -235,6 +279,13 @@ public class ModifyAppointmentController {
         return false;
     }
 
+    /**
+     * Authenticate the user before saving the changes.
+     *
+     * @return true if the user is authenticated, false otherwise.
+     * @throws SQLException If there is a database access error.
+     */
+    @FXML
     private boolean authenticate() throws SQLException {
         // Create a custom dialog.
         Dialog<Pair<String, String>> dialog = new Dialog<>();
@@ -288,16 +339,36 @@ public class ModifyAppointmentController {
         return false;
     }
 
-
+    /**
+     * Convert a LocalTime to a formatted String.
+     *
+     * @param time The time to convert.
+     * @return Formatted string representation of the time.
+     */
+    @FXML
     private String convertTimeToString(LocalTime time) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         return time.format(formatter);
     }
 
+    /**
+     * Convert an Integer to a String.
+     *
+     * @param integer The integer to convert.
+     * @return String representation of the integer.
+     */
+    @FXML
     private String convertIntegerToString(Integer integer) {
         return String.valueOf(integer);
     }
 
+    /**
+     * Save the appointment to the database after updating.
+     *
+     * @throws SQLException If there is a database access error.
+     * @throws IOException If there is an I/O error.
+     */
+    @FXML
     private void saveAppointment() throws SQLException, IOException {
         // First, authenticate the user
         if (!authenticate()) {
@@ -338,5 +409,4 @@ public class ModifyAppointmentController {
         newStage.setScene(new Scene(root));
         newStage.show();
     }
-
 }

@@ -15,6 +15,9 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+/**
+ * Controller for the Main Screen.
+ */
 public class MainScreenController {
 
     @FXML
@@ -29,11 +32,17 @@ public class MainScreenController {
     @FXML
     private Button signOutButton;
 
+    /**
+     * Initializes the main screen by checking for any upcoming appointments.
+     */
     @FXML
     public void initialize() throws SQLException {
         checkForUpcomingAppointments();
     }
 
+    /**
+     * Checks for upcoming appointments within the next 15 minutes and notifies the user.
+     */
     private void checkForUpcomingAppointments() throws SQLException {
         AppointmentDAO appointmentDAO = new AppointmentDAO();
 
@@ -59,14 +68,15 @@ public class MainScreenController {
         alert.showAndWait();
     }
 
+    /**
+     * Opens the Appointments screen.
+     */
     @FXML
     private void handleAppointmentsClick() {
         try {
-            // Load the FXML file for the Appointments page
             FXMLLoader loader = new FXMLLoader(getClass().getResource("appointmentScreen.fxml"));
             Parent appointmentsRoot = loader.load();
 
-            // Create a new stage for the Appointments page
             Stage appointmentsStage = new Stage();
             appointmentsStage.setTitle("Appointments");
             appointmentsStage.setScene(new Scene(appointmentsRoot));
@@ -76,14 +86,15 @@ public class MainScreenController {
         }
     }
 
+    /**
+     * Opens the Customers screen.
+     */
     @FXML
     private void handleCustomersClick() {
         try {
-            // Load the FXML file for the Appointments page
             FXMLLoader loader = new FXMLLoader(getClass().getResource("customerScreen.fxml"));
             Parent customersRoot = loader.load();
 
-            // Create a new stage for the Appointments page
             Stage customersStage = new Stage();
             customersStage.setTitle("Customers");
             customersStage.setScene(new Scene(customersRoot));
@@ -93,14 +104,15 @@ public class MainScreenController {
         }
     }
 
+    /**
+     * Opens the Reports screen.
+     */
     @FXML
     private void handleReportsClick() {
         try {
-            // Load the FXML file for the Appointments page
             FXMLLoader loader = new FXMLLoader(getClass().getResource("reports.fxml"));
             Parent reportsRoot = loader.load();
 
-            // Create a new stage for the Appointments page
             Stage reportsStage = new Stage();
             reportsStage.setTitle("Reports");
             reportsStage.setScene(new Scene(reportsRoot));
@@ -110,6 +122,9 @@ public class MainScreenController {
         }
     }
 
+    /**
+     * Handles the sign-out action and closes the application.
+     */
     @FXML
     private void handleSignOutClick() {
         Stage stage = (Stage) signOutButton.getScene().getWindow();

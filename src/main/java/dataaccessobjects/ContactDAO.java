@@ -5,25 +5,30 @@ import model.Contact;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.sql.Connection;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Data access object (DAO) for handling contact database operations.
+ */
 public class ContactDAO {
-    // Method to retrieve an ObservableList of all contacts from the database
+    /**
+     * Retrieves an observable list of all contacts from the database.
+     *
+     * @return ObservableList containing all contacts
+     * @throws SQLException if database query fails
+     */
     public static ObservableList<Contact> getAllContactsObservable() throws SQLException {
-        // Initialize an ObservableList to store the results
+
         ObservableList<Contact> contactList = FXCollections.observableArrayList();
 
-        // Define the SQL query to retrieve all contacts
         String query = "SELECT * FROM contacts";
         PreparedStatement preparedStatement = JDBC.openConnection().prepareStatement(query);
 
-        // Execute the query
         ResultSet resultSet = preparedStatement.executeQuery();
 
-        // Iterate through the results and create Contact objects for each row
         while (resultSet.next()) {
             int id = resultSet.getInt("Contact_ID");
             String name = resultSet.getString("Contact_Name");
@@ -34,20 +39,28 @@ public class ContactDAO {
         return contactList;
     }
 
+    /**
+     * Retrieves a contact associated with a particular contact ID.
+     *
+     * @param contactId the ID of the contact to retrieve
+     * @return the Contact object if found, null otherwise
+     * @throws SQLException if database query fails
+     */
     public static Contact getContactById(Integer contactId) throws SQLException {
         String query = "SELECT * FROM contacts WHERE Contact_ID = ?";
-        PreparedStatement preparedStatement = JDBC.openConnection().prepareStatement(query);  // Assuming connection is your database connection
+        PreparedStatement preparedStatement = JDBC.openConnection().prepareStatement(query);
         preparedStatement.setInt(1, contactId);
-        ResultSet rs = preparedStatement.executeQuery();
-        if (rs.next()) {
-            // Assuming Contact has a constructor that takes all fields as arguments
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (resultSet.next()) {
             return new Contact(
-                    rs.getInt("Contact_ID"),
-                    rs.getString("Contact_Name"),
-                    rs.getString("Email")
+                    resultSet.getInt("Contact_ID"),
+                    resultSet.getString("Contact_Name"),
+                    resultSet.getString("Email")
             );
         }
-        return null; // Return null if no contact found
+        return null;
     }
 
 }

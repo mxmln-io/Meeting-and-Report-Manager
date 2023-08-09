@@ -1,10 +1,2 @@
-2023-08-08T19:23:21.509584 - Login Successful for user: test
-
-2023-08-08T19:23:27.135631 - Login Successful for user: test
-
-2023-08-08T19:25:02.686159 - Login Failed for user: fasdf
-
-2023-08-08T19:25:21.147049 - Login Successful for user: admin
-
-2023-08-08T19:47:24.546401 - Login Successful for user: test
+2023-08-08T21:26:14.109777 - Login Successful for user: test
 

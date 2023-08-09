@@ -3,14 +3,22 @@ package dataaccessobjects;
 import helper.JDBC;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import model.Appointment;
 import model.Customer;
 
 import java.sql.*;
 import java.time.LocalDateTime;
 
+/**
+ * Data access object (DAO) for handling customer-related database operations.
+ */
 public class CustomerDAO {
 
+    /**
+     * Retrieves an observable list of all customers from the database.
+     *
+     * @return ObservableList containing all customers
+     * @throws SQLException if database query fails
+     */
     public static ObservableList<Customer> getAllCustomersObservable() throws SQLException {
         ObservableList<Customer> customerList = FXCollections.observableArrayList();
 
@@ -34,6 +42,12 @@ public class CustomerDAO {
         return customerList;
     }
 
+    /**
+     * Deletes a customer from the database based on the provided customer ID.
+     *
+     * @param id ID of the customer to be deleted
+     * @throws SQLException if database operation fails
+     */
     public static void deleteCustomer(int id) throws SQLException {
         String query = "DELETE FROM customers WHERE Customer_ID = ?";
         PreparedStatement preparedStatement = JDBC.openConnection().prepareStatement(query);
@@ -41,6 +55,12 @@ public class CustomerDAO {
         preparedStatement.executeUpdate();
     }
 
+    /**
+     * Updates the provided customer's details in the database.
+     *
+     * @param customer Customer object containing the updated details
+     * @throws SQLException if database operation fails
+     */
     public void updateCustomer(Customer customer) throws SQLException {
         String query = "UPDATE customers SET Customer_Name = ?, Address = ?, Postal_Code = ?, Phone = ?, Last_Update = ?, Last_Updated_By = ?,  Division_ID = ? WHERE Customer_ID = ?";
 
@@ -60,6 +80,12 @@ public class CustomerDAO {
         preparedStatement.executeUpdate();
     }
 
+    /**
+     * Adds a new customer to the database.
+     *
+     * @param customer Customer object containing the details of the customer to be added
+     * @throws SQLException if database operation fails
+     */
     public void addCustomer(Customer customer) throws SQLException {
         String query = "INSERT INTO customers (Customer_ID, Customer_Name, Address, Postal_Code, Phone, Create_Date, Created_By, Last_Update, Last_Updated_By, Division_ID) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -79,11 +105,15 @@ public class CustomerDAO {
 
         preparedStatement.setInt(10, customer.getDivisionId());
 
-
-
         preparedStatement.executeUpdate();
     }
 
+    /**
+     * Retrieves the next available customer ID to be used when adding a new customer to the database.
+     *
+     * @return the next available customer ID
+     * @throws SQLException if database operation fails or no maximum ID is found
+     */
     public static int getNextCustomerId() throws SQLException {
         String query = "SELECT MAX(Customer_ID) AS max_id FROM customers";
         PreparedStatement preparedStatement = JDBC.openConnection().prepareStatement(query);

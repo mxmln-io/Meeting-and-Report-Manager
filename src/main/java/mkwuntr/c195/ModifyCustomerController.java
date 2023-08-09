@@ -1,6 +1,5 @@
 package mkwuntr.c195;
 
-import dataaccessobjects.ContactDAO;
 import dataaccessobjects.CustomerDAO;
 import dataaccessobjects.DivisionDAO;
 import dataaccessobjects.UserDAO;
@@ -14,16 +13,17 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.util.Pair;
-import model.Appointment;
-import model.Contact;
 import model.Customer;
 import model.Division;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalTime;
 import java.util.Optional;
 
+/**
+ * Controller for the ModifyCustomer view.
+ * Provides functionalities to modify customer details.
+ */
 public class ModifyCustomerController {
 
     @FXML
@@ -68,6 +68,9 @@ public class ModifyCustomerController {
     @FXML
     private Customer customer;
 
+    /**
+     * Initializes the controller after its root element has been processed.
+     */
     @FXML
     public void initialize() throws SQLException {
         try {
@@ -85,32 +88,35 @@ public class ModifyCustomerController {
             countryNameField.setText("USA");
             updateStateMenuButton(1);
             countryIdMenuButton.setText(usMenuItem.getText());
-            stateMenuButton.setText(""); // reset state menu button
-            divisionIdField.clear(); // Clear divisionIdField when the country changes
+            stateMenuButton.setText("");
+            divisionIdField.clear();
         });
         ukMenuItem.setOnAction(event -> {
             countryNameField.setText("UK");
             updateStateMenuButton(2);
             countryIdMenuButton.setText(ukMenuItem.getText());
-            stateMenuButton.setText(""); // reset state menu button
-            divisionIdField.clear(); // Clear divisionIdField when the country changes
+            stateMenuButton.setText("");
+            divisionIdField.clear();
         });
         canMenuItem.setOnAction(event -> {
             countryNameField.setText("CAN");
             updateStateMenuButton(3);
             countryIdMenuButton.setText(canMenuItem.getText());
-            stateMenuButton.setText(""); // reset state menu button
-            divisionIdField.clear(); // Clear divisionIdField when the country changes
+            stateMenuButton.setText("");
+            divisionIdField.clear();
         });
 
-
         countryIdMenuButton.getItems().addAll(usMenuItem, ukMenuItem, canMenuItem);
-
     }
 
+    /**
+     * Updates the state menu button based on the countryId.
+     * @param countryId the ID of the selected country.
+     */
+    @FXML
     private void updateStateMenuButton(int countryId) {
         stateMenuButton.getItems().clear();
-        divisionIdField.clear(); // Clear the divisionIdField every time the state menu is updated
+        divisionIdField.clear();
 
         try {
             ObservableList<Division> divisions = divisionDAO.getDivisionsByCountryId(countryId);
@@ -135,6 +141,12 @@ public class ModifyCustomerController {
         }
     }
 
+    /**
+     * Authenticates the user.
+     * @return boolean indicating if authentication was successful.
+     * @throws SQLException if there's any issue accessing the database.
+     */
+    @FXML
     private boolean authenticate() throws SQLException {
         // Create a custom dialog.
         Dialog<Pair<String, String>> dialog = new Dialog<>();
@@ -188,6 +200,12 @@ public class ModifyCustomerController {
         return false;
     }
 
+    /**
+     * Saves the modified customer details.
+     * @throws SQLException if there's any issue accessing the database.
+     * @throws IOException if there's an issue with loading FXML files.
+     */
+    @FXML
     public void saveCustomer() throws SQLException, IOException {
         // Validate fields before proceeding
         if (!validateFields()) {
@@ -216,22 +234,23 @@ public class ModifyCustomerController {
         // Update the customer in the database
         customerDAO.updateCustomer(updatedCustomer);
 
-        // Close the window after saving
         Stage currentStage = (Stage) saveButton.getScene().getWindow();
         currentStage.close();
 
-        // Load the CustomerScreen.fxml again
         FXMLLoader loader = new FXMLLoader(getClass().getResource("CustomerScreen.fxml"));
         Parent customerScreenRoot = loader.load();
 
-        // Create a new stage for the CustomerScreen.fxml
         Stage customerScreenStage = new Stage();
         customerScreenStage.setTitle("Customer Screen");
         customerScreenStage.setScene(new Scene(customerScreenRoot));
         customerScreenStage.show();
     }
 
-
+    /**
+     * Validates input fields.
+     * @return boolean indicating if fields are valid.
+     */
+    @FXML
     private boolean validateFields() {
         // Check if any field is empty
         if (idTextField.getText().trim().isEmpty() ||
@@ -251,6 +270,12 @@ public class ModifyCustomerController {
         return true;
     }
 
+    /**
+     * Sets the customer for the view.
+     * @param customer Customer object to set.
+     * @throws SQLException if there's any issue accessing the database.
+     */
+    @FXML
     public void setCustomer(Customer customer) throws SQLException {
         this.customer = customer;
 
@@ -283,22 +308,28 @@ public class ModifyCustomerController {
         }
     }
 
-
+    /**
+     * Handles save button click event.
+     * @throws SQLException if there's any issue accessing the database.
+     * @throws IOException if there's an issue with loading FXML files.
+     */
     @FXML
     private void handleSaveClick() throws SQLException, IOException {
         saveCustomer();
     }
 
+    /**
+     * Handles cancel button click event.
+     * @throws IOException if there's an issue with loading FXML files.
+     */
     @FXML
     private void handleCancelClick() throws IOException {
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         stage.close();
 
-        // Load the CustomerScreen.fxml again
         FXMLLoader loader = new FXMLLoader(getClass().getResource("CustomerScreen.fxml"));
         Parent root = loader.load();
 
-        // Create a new stage for the CustomerScreen.fxml
         Stage stage2 = new Stage();
         stage2.setTitle("Customer Screen");
         stage2.setScene(new Scene(root));

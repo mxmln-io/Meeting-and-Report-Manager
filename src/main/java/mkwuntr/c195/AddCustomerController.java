@@ -1,6 +1,5 @@
 package mkwuntr.c195;
 
-import dataaccessobjects.ContactDAO;
 import dataaccessobjects.CustomerDAO;
 import dataaccessobjects.DivisionDAO;
 import dataaccessobjects.UserDAO;
@@ -14,16 +13,17 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.util.Pair;
-import model.Contact;
 import model.Customer;
 import model.Division;
-import model.User;
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Optional;
 
+/**
+ * Controller class responsible for handling the Add Customer functionality.
+ * Provides user interface controls and logic for adding a new customer.
+ */
 public class AddCustomerController {
 
     @FXML
@@ -62,6 +62,10 @@ public class AddCustomerController {
     @FXML
     private DivisionDAO divisionDAO = new DivisionDAO();
 
+    /**
+     * Initializes the view elements. This method is called after all @FXML annotated members are populated.
+     * @throws SQLException If there is an error fetching data from the database.
+     */
     @FXML
     public void initialize() throws SQLException {
         try {
@@ -79,22 +83,22 @@ public class AddCustomerController {
             countryNameField.setText("USA");
             updateStateMenuButton(1);
             countryIdMenuButton.setText(usMenuItem.getText());
-            stateMenuButton.setText(""); // reset state menu button
-            divisionIdField.clear(); // Clear divisionIdField when the country changes
+            stateMenuButton.setText("");
+            divisionIdField.clear();
         });
         ukMenuItem.setOnAction(event -> {
             countryNameField.setText("UK");
             updateStateMenuButton(2);
             countryIdMenuButton.setText(ukMenuItem.getText());
-            stateMenuButton.setText(""); // reset state menu button
-            divisionIdField.clear(); // Clear divisionIdField when the country changes
+            stateMenuButton.setText("");
+            divisionIdField.clear();
         });
         canMenuItem.setOnAction(event -> {
             countryNameField.setText("CAN");
             updateStateMenuButton(3);
             countryIdMenuButton.setText(canMenuItem.getText());
-            stateMenuButton.setText(""); // reset state menu button
-            divisionIdField.clear(); // Clear divisionIdField when the country changes
+            stateMenuButton.setText("");
+            divisionIdField.clear();
         });
 
 
@@ -102,9 +106,13 @@ public class AddCustomerController {
 
     }
 
+    /**
+     * Dynamically updates the state menu items based on the country selected.
+     * @param countryId The ID of the country.
+     */
     private void updateStateMenuButton(int countryId) {
         stateMenuButton.getItems().clear();
-        divisionIdField.clear(); // Clear the divisionIdField every time the state menu is updated
+        divisionIdField.clear();
 
         try {
             ObservableList<Division> divisions = divisionDAO.getDivisionsByCountryId(countryId);
@@ -129,17 +137,21 @@ public class AddCustomerController {
         }
     }
 
-
+    /**
+     * Authenticates the user credentials using a dialog prompt.
+     * @return {@code true} if the user is authenticated successfully, {@code false} otherwise.
+     * @throws SQLException If there is an error verifying user credentials.
+     */
     private boolean authenticate() throws SQLException {
-        // Create a custom dialog.
+        // Create a custom dialog
         Dialog<Pair<String, String>> dialog = new Dialog<>();
         dialog.setTitle("Authentication");
 
-        // Set up the login button.
+        // Set up the login button
         ButtonType loginButtonType = new ButtonType("Confirm change", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
 
-        // Create the username and password fields.
+        // Create the username and password fields
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
@@ -183,6 +195,12 @@ public class AddCustomerController {
         return false;
     }
 
+    /**
+     * Saves the customer details entered by the user.
+     * Validates the fields, authenticates the user and saves the customer if all conditions are met.
+     * @throws SQLException If there is an error saving the customer to the database.
+     * @throws IOException If there is an error loading the next scene.
+     */
     public void saveCustomer() throws SQLException, IOException {
 
         // Validate fields before proceeding
@@ -210,25 +228,25 @@ public class AddCustomerController {
 
         Customer newCustomer = new Customer(id, name, address, postalCode, phone, divisionId);
 
-        // Add the new customer to the database
         CustomerDAO customerDAO = new CustomerDAO();
         customerDAO.addCustomer(newCustomer);
 
-        // Close the window after saving
         Stage currentStage = (Stage) saveButton.getScene().getWindow();
         currentStage.close();
 
-        // Load the CustomerScreen.fxml again
         FXMLLoader loader = new FXMLLoader(getClass().getResource("CustomerScreen.fxml"));
         Parent customerScreenRoot = loader.load();
 
-        // Create a new stage for the CustomerScreen.fxml
         Stage customerScreenStage = new Stage();
         customerScreenStage.setTitle("Customer Screen");
         customerScreenStage.setScene(new Scene(customerScreenRoot));
         customerScreenStage.show();
     }
 
+    /**
+     * Validates the input fields to ensure all necessary data is provided.
+     * @return {@code true} if all fields are valid, {@code false} otherwise.
+     */
     private boolean validateFields() {
         // Check if any field is empty
         if (idTextField.getText().trim().isEmpty() ||
@@ -248,23 +266,28 @@ public class AddCustomerController {
         return true;
     }
 
-
-
+    /**
+     * Event handler for the Save button click. Triggers the save customer operation.
+     * @throws SQLException If there is an error saving the customer.
+     * @throws IOException If there is an error loading the next scene.
+     */
     @FXML
     private void handleSaveClick() throws SQLException, IOException {
         saveCustomer();
     }
 
+    /**
+     * Event handler for the Cancel button click. Closes the current window and loads the Customer screen.
+     * @throws IOException If there is an error loading the Customer screen.
+     */
     @FXML
     private void handleCancelClick() throws IOException {
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         stage.close();
 
-        // Load the CustomerScreen.fxml again
         FXMLLoader loader = new FXMLLoader(getClass().getResource("CustomerScreen.fxml"));
         Parent root = loader.load();
 
-        // Create a new stage for the CustomerScreen.fxml
         Stage stage2 = new Stage();
         stage2.setTitle("Customer Screen");
         stage2.setScene(new Scene(root));

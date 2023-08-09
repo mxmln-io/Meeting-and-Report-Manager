@@ -5,13 +5,21 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Country;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Data access object (DAO) for handling country database operations.
+ */
 public class CountryDAO {
 
+    /**
+     * Retrieves an observable list of all countries from the database.
+     *
+     * @return ObservableList containing all countries
+     * @throws SQLException if database query fails
+     */
     public ObservableList<Country> getAllCountriesObservable() throws SQLException {
         ObservableList<Country> countryList = FXCollections.observableArrayList();
 
