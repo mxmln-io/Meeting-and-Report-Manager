@@ -1,5 +1,6 @@
 package dataaccessobjects;
 
+import javafx.util.Pair;
 import model.Appointment;
 import helper.JDBC;
 
@@ -9,6 +10,7 @@ import javafx.collections.ObservableList;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -16,17 +18,97 @@ import java.time.ZonedDateTime;
 public class AppointmentDAO {
     // Method to retrieve an ObservableList of all appointments from the database
     public ObservableList<Appointment> getAllAppointmentsObservable() throws SQLException {
-        // Initialize an ObservableList to store the results
-        ObservableList<Appointment> appointmentList = FXCollections.observableArrayList();
-
-        // Define the SQL query to retrieve all appointments
         String query = "SELECT * FROM appointments";
         PreparedStatement preparedStatement = JDBC.openConnection().prepareStatement(query);
-
-        // Execute the query
         ResultSet resultSet = preparedStatement.executeQuery();
+        return createAppointmentsFromResultSet(resultSet);
+    }
 
-        // Iterate through the results and create Appointment objects for each row
+    public ObservableList<Appointment> getAllAppointmentsByCustomer(int customerIdSearch) throws SQLException {
+        String query =  "SELECT * FROM appointments WHERE customer_id = ?";
+        PreparedStatement preparedStatement = JDBC.openConnection().prepareStatement(query);
+        preparedStatement.setInt(1, customerIdSearch);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        return createAppointmentsFromResultSet(resultSet);
+    }
+
+
+    public void deleteAppointment(int id) throws SQLException {
+        String query = "DELETE FROM appointments WHERE Appointment_ID = ?";
+        PreparedStatement preparedStatement = JDBC.openConnection().prepareStatement(query);
+        preparedStatement.setInt(1, id);
+        preparedStatement.executeUpdate();
+    }
+
+    public void updateAppointment(Appointment appointment) throws SQLException {
+        String query = "UPDATE appointments SET Title = ?, Description = ?, Location = ?, Type = ?, " +
+                "Start = ?, End = ?, Last_Update = ?, Last_Updated_By = ?, Customer_ID = ?, User_ID = ?, Contact_ID = ? WHERE Appointment_ID = ?";
+
+        PreparedStatement preparedStatement = JDBC.openConnection().prepareStatement(query);
+
+        preparedStatement.setString(1, appointment.getTitle());
+        preparedStatement.setString(2, appointment.getDescription());
+        preparedStatement.setString(3, appointment.getLocation());
+        preparedStatement.setString(4, appointment.getType());
+        preparedStatement.setTimestamp(5, Timestamp.valueOf(appointment.getStartDateTime()));
+        preparedStatement.setTimestamp(6, Timestamp.valueOf(appointment.getEndDateTime()));
+
+        preparedStatement.setTimestamp(7, Timestamp.valueOf(LocalDateTime.now()));
+        preparedStatement.setString(8, "user");
+
+        preparedStatement.setInt(9, appointment.getCustomerId());
+        preparedStatement.setInt(10, appointment.getUserId());
+        preparedStatement.setInt(11, appointment.getContactId());
+        preparedStatement.setInt(12, appointment.getId());
+
+        preparedStatement.executeUpdate();
+    }
+
+    public void addAppointment(Appointment appointment) throws SQLException {
+        String query = "INSERT INTO appointments (Appointment_ID, Title, Description, Location, Type, Start, End, Create_Date, Created_By, Last_Update, Last_Updated_By, Customer_ID, User_ID, Contact_ID) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        PreparedStatement preparedStatement = JDBC.openConnection().prepareStatement(query);
+
+        preparedStatement.setInt(1, appointment.getId());
+        preparedStatement.setString(2, appointment.getTitle());
+        preparedStatement.setString(3, appointment.getDescription());
+        preparedStatement.setString(4, appointment.getLocation());
+        preparedStatement.setString(5, appointment.getType());
+        preparedStatement.setTimestamp(6, Timestamp.valueOf(appointment.getStartDateTime()));
+        preparedStatement.setTimestamp(7, Timestamp.valueOf(appointment.getEndDateTime()));
+
+        preparedStatement.setTimestamp(8, Timestamp.valueOf(LocalDateTime.now()));
+        preparedStatement.setString(9, "user");
+        preparedStatement.setTimestamp(10, Timestamp.valueOf(LocalDateTime.now()));
+        preparedStatement.setString(11, "user");
+
+
+        preparedStatement.setInt(12, appointment.getCustomerId());
+        preparedStatement.setInt(13, appointment.getUserId());
+        preparedStatement.setInt(14, appointment.getContactId());
+
+        preparedStatement.executeUpdate();
+    }
+
+
+    public ObservableList<Appointment> getAppointmentsForWeekObservable() throws SQLException {
+        String query = "SELECT * FROM appointments WHERE YEARWEEK(DATE(Start), 1) = YEARWEEK(CURDATE(), 1)";
+        PreparedStatement preparedStatement = JDBC.openConnection().prepareStatement(query);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        return createAppointmentsFromResultSet(resultSet);
+    }
+
+    public ObservableList<Appointment> getAppointmentsForMonthObservable() throws SQLException {
+        String query = "SELECT * FROM appointments WHERE MONTH(Start) = MONTH(CURDATE()) AND YEAR(Start) = YEAR(CURDATE())";
+        PreparedStatement preparedStatement = JDBC.openConnection().prepareStatement(query);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        return createAppointmentsFromResultSet(resultSet);
+    }
+
+    private ObservableList<Appointment> createAppointmentsFromResultSet(ResultSet resultSet) throws SQLException {
+        ObservableList<Appointment> appointmentList = FXCollections.observableArrayList();
+
         while (resultSet.next()) {
             int id = resultSet.getInt("Appointment_ID");
             String title = resultSet.getString("Title");
@@ -50,5 +132,16 @@ public class AppointmentDAO {
             appointmentList.add(appointment);
         }
         return appointmentList;
+    }
+
+    public int getNextAppointmentId() throws SQLException {
+        String query = "SELECT MAX(Appointment_ID) AS max_id FROM appointments";
+        PreparedStatement preparedStatement = JDBC.openConnection().prepareStatement(query);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            return resultSet.getInt("max_id") + 1;
+        } else {
+            throw new SQLException("Unable to fetch maximum Appointment ID from database");
+        }
     }
 }

@@ -13,9 +13,11 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import model.User;
 
-import java.io.IOException;
+import java.io.*;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -85,17 +87,17 @@ public class LoginFormController {
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
 
-        // Perform validation logic for username and password
         if (username.isEmpty() || password.isEmpty()) {
-            // Display the error message based on the current language setting
             String errorMessage = resources.getString("error");
-            displayErrorMessage(errorMessage); // Use the displayErrorMessage method to show an error dialog
+            displayErrorMessage(errorMessage);
         } else {
-            // Proceed with login logic
             try {
                 ObservableList<User> users = userDAO.getAllUsersObservable();
                 boolean isAuthenticated = users.stream()
                         .anyMatch(user -> user.getName().equals(username) && user.getPassword().equals(password));
+
+                // Record the login attempt
+                recordLoginAttempt(username, isAuthenticated);
 
                 if (isAuthenticated) {
                     // Login is successful, continue to next screen or operations
@@ -113,20 +115,16 @@ public class LoginFormController {
                         displayErrorMessage(errorMessage);
                     }
                 } else {
-                    // Invalid credentials, display an error message
                     String errorMessage = resources.getString("login_error");
                     displayErrorMessage(errorMessage);
                 }
             } catch (SQLException e) {
-                // Handle SQL exception
                 e.printStackTrace();
                 String errorMessage = resources.getString("database_error");
                 displayErrorMessage(errorMessage);
             }
         }
     }
-
-
 
     @FXML
     private void handleLoginClick() {
@@ -161,6 +159,25 @@ public class LoginFormController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+    private void recordLoginAttempt(String username, boolean success) {
+        String appDir = System.getProperty("user.dir");
+        String filePath = appDir + File.separator + "login_activity.txt";
+
+        try (FileWriter writer = new FileWriter(filePath, true);
+             BufferedWriter bufferedWriter = new BufferedWriter(writer);
+             PrintWriter out = new PrintWriter(bufferedWriter)) {
+
+            String result = success ? "Successful" : "Failed";
+            String entry = String.format("%s - Login %s for user: %s%n", LocalDateTime.now(), result, username);
+            out.println(entry);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        }
+    }
+
 
 }
 

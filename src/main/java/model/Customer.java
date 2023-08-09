@@ -1,7 +1,5 @@
 package model;
 
-import java.time.LocalDateTime;
-
 public class Customer {
     private int id;
     private String name;
@@ -62,25 +60,7 @@ public class Customer {
     public void setAddress(String address) {
         this.address = address;
     }
-    /*
-    // Country
-    public String getCountry() {
-        return country;
-    }
 
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    // State/Province
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-    */
     // Postal Code
     public String getPostalCode() {
         return postalCode;
@@ -98,35 +78,6 @@ public class Customer {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
-
-    // Create Date and Time
-    /* public LocalDateTime getCreateDateTime() {return createDateTime;}
-
-    public void setCreateDateTime(LocalDateTime createDateTime) {
-        this.createDateTime = createDateTime;
-    }
-
-    // Created By
-    public String getCreatedBy() {return createdBy;}
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    // Last Update Date and Time
-    public LocalDateTime getLastUpdateDateTime() {return lastUpdateDateTime;}
-
-    public void setLastUpdateDateTime(LocalDateTime lastUpdateDateTime) {
-        this.lastUpdateDateTime = lastUpdateDateTime;
-    }
-
-    // Last Updated By
-    public String getLastUpdatedBy() {return lastUpdatedBy;}
-
-    public void setLastUpdatedBy(String lastUpdatedBy) {
-        this.lastUpdatedBy = lastUpdatedBy;
-    }
-    */
 
     // Division ID
     public int getDivisionId() {return divisionId;}

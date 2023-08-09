@@ -15,50 +15,81 @@
       <Label layoutX="20.0" layoutY="110.0" text="Title:" />
       <Label layoutX="19.0" layoutY="152.0" text="Description:" />
       <Label layoutX="22.0" layoutY="192.0" text="Location:" />
-      <Label layoutX="23.0" layoutY="233.0" text="Contact:" />
-      <Label layoutX="20.0" layoutY="280.0" text="Type:" />
-      <Label layoutX="332.0" layoutY="71.0" text="Date:" />
-      <Label layoutX="332.0" layoutY="110.0" text="Start Time:" />
-      <Label layoutX="334.0" layoutY="153.0" text="End Time:" />
+      <Label layoutX="23.0" layoutY="233.0" text="Contact ID:" />
+      <Label layoutX="331.0" layoutY="72.0" text="Type:" />
+      <Label layoutX="332.0" layoutY="111.0" text="Date:" />
+      <Label layoutX="332.0" layoutY="150.0" text="Start Time:" />
+      <Label layoutX="334.0" layoutY="193.0" text="End Time:" />
       <Label layoutX="332.0" layoutY="232.0" text="Customer ID:" />
       <Label layoutX="332.0" layoutY="279.0" text="User ID:" />
-      <TextField layoutX="115.0" layoutY="67.0" />
-      <TextField layoutX="115.0" layoutY="106.0" />
-      <TextField layoutX="115.0" layoutY="148.0" />
-      <TextField layoutX="115.0" layoutY="188.0" />
-      <TextField layoutX="115.0" layoutY="275.0" />
-      <MenuButton layoutX="113.0" layoutY="229.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="160.0" text="">
-        <items>
-          <MenuItem mnemonicParsing="false" text="Action 1" />
-          <MenuItem mnemonicParsing="false" text="Action 2" />
-        </items>
-      </MenuButton>
-      <DatePicker layoutX="416.0" layoutY="67.0" prefHeight="26.0" prefWidth="160.0" />
-      <MenuButton layoutX="414.0" layoutY="106.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="160.0" text="">
+      <TextField fx:id="idTextField" disable="true" layoutX="115.0" layoutY="67.0" />
+      <TextField fx:id="titleTextField" layoutX="115.0" layoutY="106.0" />
+      <TextField fx:id="descriptionTextField" layoutX="115.0" layoutY="148.0" />
+      <TextField fx:id="locationTextField" layoutX="115.0" layoutY="188.0" />
+      <TextField fx:id="typeTextField" layoutX="414.0" layoutY="67.0" />
+      <MenuButton fx:id="contactMenuButton" layoutX="113.0" layoutY="229.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="160.0" text="" />
+      <DatePicker fx:id="datePicker" layoutX="414.0" layoutY="107.0" prefHeight="26.0" prefWidth="160.0" />
+      <MenuButton fx:id="startTimeMenuButton" layoutX="414.0" layoutY="146.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="160.0" text="">
          <items>
-            <MenuItem mnemonicParsing="false" text="Action 1" />
-            <MenuItem mnemonicParsing="false" text="Action 2" />
+            <MenuItem mnemonicParsing="false" text="00:00" />
+            <MenuItem mnemonicParsing="false" text="01:00" />
+            <MenuItem mnemonicParsing="false" text="02:00" />
+            <MenuItem mnemonicParsing="false" text="03:00" />
+            <MenuItem mnemonicParsing="false" text="04:00" />
+            <MenuItem mnemonicParsing="false" text="05:00" />
+            <MenuItem mnemonicParsing="false" text="06:00" />
+            <MenuItem mnemonicParsing="false" text="07:00" />
+            <MenuItem mnemonicParsing="false" text="08:00" />
+            <MenuItem mnemonicParsing="false" text="09:00" />
+            <MenuItem mnemonicParsing="false" text="10:00" />
+            <MenuItem mnemonicParsing="false" text="11:00" />
+            <MenuItem mnemonicParsing="false" text="12:00" />
+            <MenuItem mnemonicParsing="false" text="13:00" />
+            <MenuItem mnemonicParsing="false" text="14:00" />
+            <MenuItem mnemonicParsing="false" text="15:00" />
+            <MenuItem mnemonicParsing="false" text="16:00" />
+            <MenuItem mnemonicParsing="false" text="17:00" />
+            <MenuItem mnemonicParsing="false" text="18:00" />
+            <MenuItem mnemonicParsing="false" text="19:00" />
+            <MenuItem mnemonicParsing="false" text="20:00" />
+            <MenuItem mnemonicParsing="false" text="21:00" />
+            <MenuItem mnemonicParsing="false" text="22:00" />
+            <MenuItem mnemonicParsing="false" text="23:00" />
          </items>
       </MenuButton>
-      <MenuButton layoutX="414.0" layoutY="276.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="160.0" text="">
+      <MenuButton fx:id="userIdMenuButton" layoutX="414.0" layoutY="276.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="160.0" text="" />
+      <MenuButton fx:id="customerIdMenuButton" layoutX="414.0" layoutY="229.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="160.0" text="" />
+      <MenuButton fx:id="endTimeMenuButton" layoutX="414.0" layoutY="188.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="160.0" text="">
          <items>
-            <MenuItem mnemonicParsing="false" text="Action 1" />
-            <MenuItem mnemonicParsing="false" text="Action 2" />
+            <MenuItem mnemonicParsing="false" text="00:00" />
+            <MenuItem mnemonicParsing="false" text="01:00" />
+            <MenuItem mnemonicParsing="false" text="02:00" />
+            <MenuItem mnemonicParsing="false" text="03:00" />
+            <MenuItem mnemonicParsing="false" text="04:00" />
+            <MenuItem mnemonicParsing="false" text="05:00" />
+            <MenuItem mnemonicParsing="false" text="06:00" />
+            <MenuItem mnemonicParsing="false" text="07:00" />
+            <MenuItem mnemonicParsing="false" text="08:00" />
+            <MenuItem mnemonicParsing="false" text="09:00" />
+            <MenuItem mnemonicParsing="false" text="10:00" />
+            <MenuItem mnemonicParsing="false" text="11:00" />
+            <MenuItem mnemonicParsing="false" text="12:00" />
+            <MenuItem mnemonicParsing="false" text="13:00" />
+            <MenuItem mnemonicParsing="false" text="14:00" />
+            <MenuItem mnemonicParsing="false" text="15:00" />
+            <MenuItem mnemonicParsing="false" text="16:00" />
+            <MenuItem mnemonicParsing="false" text="17:00" />
+            <MenuItem mnemonicParsing="false" text="18:00" />
+            <MenuItem mnemonicParsing="false" text="19:00" />
+            <MenuItem mnemonicParsing="false" text="20:00" />
+            <MenuItem mnemonicParsing="false" text="21:00" />
+            <MenuItem mnemonicParsing="false" text="22:00" />
+            <MenuItem mnemonicParsing="false" text="23:00" />
          </items>
       </MenuButton>
-      <MenuButton layoutX="414.0" layoutY="229.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="160.0" text="">
-         <items>
-            <MenuItem mnemonicParsing="false" text="Action 1" />
-            <MenuItem mnemonicParsing="false" text="Action 2" />
-         </items>
-      </MenuButton>
-      <MenuButton layoutX="414.0" layoutY="148.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="160.0" text="">
-         <items>
-            <MenuItem mnemonicParsing="false" text="Action 1" />
-            <MenuItem mnemonicParsing="false" text="Action 2" />
-         </items>
-      </MenuButton>
-      <Button fx:id="saveButton" layoutX="439.0" layoutY="343.0" mnemonicParsing="false" text="Save" onAction="#handleSaveClick" />
-      <Button fx:id="cancelButton" layoutX="534.0" layoutY="344.0" mnemonicParsing="false" text="Cancel" onAction="#handleCancelClick" />
+      <Button fx:id="saveButton" layoutX="439.0" layoutY="343.0" mnemonicParsing="false" onAction="#handleSaveClick" text="Save" />
+      <Button fx:id="cancelButton" layoutX="534.0" layoutY="344.0" mnemonicParsing="false" onAction="#handleCancelClick" text="Cancel" />
+      <Label layoutX="23.0" layoutY="279.0" text="Contact:" />
+      <TextField fx:id="contactField" disable="true" layoutX="113.0" layoutY="276.0" />
    </children>
 </AnchorPane>
