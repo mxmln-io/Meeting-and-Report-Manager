@@ -259,8 +259,20 @@ public class CustomerScreenController {
      * This method closes the current screen.
      */
     @FXML
-    private void handleExitClick(){
-        Stage stage = (Stage) exitButton.getScene().getWindow();
-        stage.close();
+    private void handleExitClick() {
+        try {
+            Stage currentStage = (Stage) exitButton.getScene().getWindow();
+            currentStage.close();
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("mainScreen.fxml"));
+            Parent mainScreenRoot = loader.load();
+
+            Stage mainScreenStage = new Stage();
+            mainScreenStage.setTitle("Main Screen");
+            mainScreenStage.setScene(new Scene(mainScreenRoot));
+            mainScreenStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

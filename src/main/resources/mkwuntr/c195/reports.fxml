@@ -11,54 +11,53 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="615.0" prefWidth="1156.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mkwuntr.c195.ReportsController">
+<AnchorPane prefHeight="827.0" prefWidth="1156.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mkwuntr.c195.ReportsController">
    <children>
       <Label layoutX="471.0" layoutY="26.0" text="Reports">
          <font>
             <Font size="25.0" />
          </font>
       </Label>
-      <TabPane layoutX="40.0" layoutY="67.0" prefHeight="491.0" prefWidth="1074.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane layoutX="40.0" layoutY="67.0" prefHeight="699.0" prefWidth="1074.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="Totals">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="460.0" prefWidth="1058.0">
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="634.0" prefWidth="1074.0">
                      <children>
-                        <TableView fx:id="appointmentTypeTable" layoutX="37.0" layoutY="71.0" prefHeight="279.0" prefWidth="303.0">
-                          <columns>
-                            <TableColumn fx:id="typeColumn" prefWidth="152.0" text="Type" />
-                            <TableColumn fx:id="totalByTypeColumn" prefWidth="150.0" text="Appointment Total" />
-                          </columns>
-                        </TableView>
-                        <TableView fx:id="appointmentMonthTable" layoutX="380.0" layoutY="70.0" prefHeight="281.0" prefWidth="315.0">
-                          <columns>
-                            <TableColumn fx:id="monthColumn" prefWidth="158.0" text="Month" />
-                            <TableColumn fx:id="totalByMonthColumn" prefWidth="156.0" text="Appointment Total" />
-                          </columns>
-                        </TableView>
-                        <TableView fx:id="appointmentCustomerTable" layoutX="723.0" layoutY="70.0" prefHeight="281.0" prefWidth="315.0">
+
+                         <TableView fx:id="appointmentCustomerTable" layoutX="721.0" layoutY="82.0" prefHeight="551.0" prefWidth="315.0">
                            <columns>
                               <TableColumn fx:id="customerColumn" prefWidth="158.0" text="Customer" />
                               <TableColumn fx:id="totalByCustomerColumn" prefWidth="156.0" text="Appointment Total" />
                            </columns>
                         </TableView>
-                        <Label layoutX="112.0" layoutY="30.0" text="Appointment Totals by Type" />
-                        <Label layoutX="457.0" layoutY="30.0" text="Appointment Totals by Month" />
-                        <Label layoutX="804.0" layoutY="30.0" text="Appointment Totals by Customer" />
+                        <Label layoutX="139.0" layoutY="14.0" text="Appointment Totals by Type and Month" />
+                        <Label layoutX="803.0" layoutY="14.0" text="Appointment Totals by Customer" />
+                        <TableView fx:id="appointmentTypeMonthTable" layoutX="62.0" layoutY="82.0" prefHeight="550.0" prefWidth="393.0">
+                           <columns>
+                              <TableColumn fx:id="monthColumn" prefWidth="238.0" text="Month" />
+                              <TableColumn fx:id="totalByMonthColumn" prefWidth="152.0" text="Appointment Total" />
+                           </columns>
+                        </TableView>
+                        <MenuButton fx:id="typeMenuButton" layoutX="104.0" layoutY="41.0" mnemonicParsing="false" text="">
+                          <items>
+                          </items>
+                        </MenuButton>
+                        <Label layoutX="62.0" layoutY="45.0" text="Type:" />
                      </children>
                   </AnchorPane>
             </content>
           </Tab>
           <Tab text="Schedules">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="621.0" prefWidth="1074.0">
                      <children>
                         <MenuButton fx:id="contactMenuButton" layoutX="87.0" layoutY="24.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="132.0">
                           <items>
                           </items>
                         </MenuButton>
                         <Label layoutX="33.0" layoutY="29.0" text="Contact:" />
-                        <TableView fx:id="contactAppointmentTable" layoutX="33.0" layoutY="76.0" prefHeight="368.0" prefWidth="1011.0">
+                        <TableView fx:id="contactAppointmentTable" layoutX="33.0" layoutY="76.0" prefHeight="475.0" prefWidth="1011.0">
                           <columns>
                             <TableColumn fx:id="appointmentIdColumn" prefWidth="104.0" text="Appointment ID" />
                             <TableColumn fx:id="titleColumn" text="Title" />
@@ -76,6 +75,6 @@
           </Tab>
         </tabs>
       </TabPane>
-      <Button fx:id="exitButton" layoutX="891.0" layoutY="576.0" mnemonicParsing="false" onAction="#handleExitClick" text="Exit" />
+      <Button fx:id="exitButton" layoutX="1077.0" layoutY="777.0" mnemonicParsing="false" onAction="#handleExitClick" text="Exit" />
    </children>
 </AnchorPane>

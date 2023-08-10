@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Data access object (DAO) for handling report-related database operations.
@@ -69,48 +71,6 @@ public class ReportDAO {
     }
 
     /**
-     * Retrieves the count of appointments grouped by their type.
-     *
-     * @return ObservableList of pairs where the key is the type of the appointment and the value is the count
-     * @throws SQLException if database query fails
-     */
-    public ObservableList<Pair<String, Integer>> getAppointmentsCountByType() throws SQLException {
-        String query =  "SELECT Type, COUNT(*) as Total FROM appointments GROUP BY Type";
-        PreparedStatement preparedStatement = JDBC.openConnection().prepareStatement(query);
-        ResultSet resultSet = preparedStatement.executeQuery();
-
-        ObservableList<Pair<String, Integer>> typeCounts = FXCollections.observableArrayList();
-        while(resultSet.next()){
-            String type = resultSet.getString("Type");
-            int count = resultSet.getInt("Total");
-            typeCounts.add(new Pair<>(type, count));
-        }
-        return typeCounts;
-    }
-
-    /**
-     * Retrieves the count of appointments grouped by the month of their start date.
-     *
-     * @return ObservableList of pairs where the key is the month name and the value is the count
-     * @throws SQLException if database query fails
-     */
-    public ObservableList<Pair<String, Integer>> getAppointmentsCountByMonth() throws SQLException {
-        String query =  "SELECT MONTHNAME(Start) as Month, COUNT(*) as Total \n" +
-                "FROM appointments \n" +
-                "GROUP BY MONTH(Start), MONTHNAME(Start)\n";
-        PreparedStatement preparedStatement = JDBC.openConnection().prepareStatement(query);
-        ResultSet resultSet = preparedStatement.executeQuery();
-
-        ObservableList<Pair<String, Integer>> monthCounts = FXCollections.observableArrayList();
-        while(resultSet.next()){
-            String month = resultSet.getString("Month");
-            int count = resultSet.getInt("Total");
-            monthCounts.add(new Pair<>(month, count));
-        }
-        return monthCounts;
-    }
-
-    /**
      * Retrieves the count of appointments grouped by customer.
      *
      * @return ObservableList of pairs where the key is the customer's name and the value is the count
@@ -128,5 +88,65 @@ public class ReportDAO {
             customerCounts.add(new Pair<>(customerName, count));
         }
         return customerCounts;
+    }
+
+    /**
+     * Retrieves a list of all unique appointment types.
+     *
+     * @return ObservableList containing all unique appointment types
+     * @throws SQLException if database query fails
+     */
+    public ObservableList<String> getAllTypes() throws SQLException {
+        String query = "SELECT DISTINCT Type FROM appointments";
+        PreparedStatement preparedStatement = JDBC.openConnection().prepareStatement(query);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        ObservableList<String> types = FXCollections.observableArrayList();
+        while(resultSet.next()) {
+            String type = resultSet.getString("Type");
+            types.add(type);
+        }
+        return types;
+    }
+
+    /**
+     * Fetches the count of appointments of a specific type for each month from the database.
+     * This method ensures that if a month has no appointments of the given type, it still returns
+     * that month with a count of zero.
+     *
+     * @param type The type of appointment to filter by.
+     * @return An observable list containing pairs, where each pair represents a month and its
+     * corresponding count of appointments of the given type.
+     * @throws SQLException if there is an error fetching data from the database.
+     */
+    public ObservableList<Pair<String, Integer>> getAppointmentMonthByType(String type) throws SQLException {
+        String query = "SELECT MONTHNAME(Start) as Month, COUNT(*) as Total " +
+                "FROM appointments " +
+                "WHERE Type = ? " +
+                "GROUP BY MONTH(Start), MONTHNAME(Start);";
+        PreparedStatement preparedStatement = JDBC.openConnection().prepareStatement(query);
+        preparedStatement.setString(1, type);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        // Initialize a map with default counts for each month
+        Map<String, Integer> monthCounts = new HashMap<>();
+        String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+        for (String month : months) {
+            monthCounts.put(month, 0);
+        }
+
+        // Update the counts with data from the database
+        while (resultSet.next()) {
+            String monthName = resultSet.getString("Month");
+            int count = resultSet.getInt("Total");
+            monthCounts.put(monthName, count);
+        }
+
+        ObservableList<Pair<String, Integer>> monthTypeCounts = FXCollections.observableArrayList();
+        for (String month : months) {
+            monthTypeCounts.add(new Pair<>(month, monthCounts.get(month)));
+        }
+
+        return monthTypeCounts;
     }
 }

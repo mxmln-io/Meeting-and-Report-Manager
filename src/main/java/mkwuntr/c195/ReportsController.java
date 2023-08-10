@@ -2,17 +2,21 @@ package mkwuntr.c195;
 
 import dataaccessobjects.ContactDAO;
 import dataaccessobjects.ReportDAO;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.*;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 import model.Appointment;
 import model.Contact;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 
@@ -25,16 +29,10 @@ public class ReportsController {
     private Button exitButton;
 
     @FXML
-    private TableView<Pair<String, Integer>> appointmentTypeTable;
+    private MenuButton typeMenuButton;
 
     @FXML
-    private TableColumn<Pair<String, Integer>, String> typeColumn;
-
-    @FXML
-    private TableColumn<Pair<String, Integer>, Integer> totalByTypeColumn;
-
-    @FXML
-    private TableView<Pair<String, Integer>> appointmentMonthTable;
+    private TableView<Pair<String, Integer>> appointmentTypeMonthTable;
 
     @FXML
     private TableColumn<Pair<String, Integer>, String> monthColumn;
@@ -50,7 +48,6 @@ public class ReportsController {
 
     @FXML
     private TableColumn<Pair<String, Integer>, Integer> totalByCustomerColumn;
-
 
     @FXML
     private TableView<Appointment> contactAppointmentTable;
@@ -94,38 +91,76 @@ public class ReportsController {
      */
     @FXML
     public void initialize() throws SQLException {
-        populateAppointmentTypeTable();
-        populateAppointmentMonthTable();
+        populateTypeMenuButton();
         populateAppointmentCustomerTable();
         populateContactMenuButton();
     }
 
     /**
-     * Populates the appointment type table with data.
+     * Populates the type menu button with appointment types from the database.
      * @throws SQLException if there is an error fetching data from the database.
      */
     @FXML
-    private void populateAppointmentTypeTable() throws SQLException {
-        ObservableList<Pair<String, Integer>> typesData = reportDAO.getAppointmentsCountByType();
+    private void populateTypeMenuButton() throws SQLException {
+        ObservableList<String> types = reportDAO.getAllTypes();
 
-        typeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKey()));
-        totalByTypeColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getValue()).asObject());
-
-        appointmentTypeTable.setItems(typesData);
+        for (String type : types) {
+            MenuItem menuItem = new MenuItem(type);
+            menuItem.setOnAction(event -> {
+                typeMenuButton.setText(type);
+                handleTypeMenuItemAction(event);
+            });
+            typeMenuButton.getItems().add(menuItem);
+        }
     }
 
     /**
-     * Populates the appointment month table with data.
-     * @throws SQLException if there is an error fetching data from the database.
+     * Handles the action when a type menu item is selected. It updates the table view
+     * to display appointment counts by month for the selected type.
+     * @param event the action event triggered by the menu item selection.
      */
     @FXML
-    private void populateAppointmentMonthTable() throws SQLException {
-        ObservableList<Pair<String, Integer>> monthsData = reportDAO.getAppointmentsCountByMonth();
+    private void handleTypeMenuItemAction(ActionEvent event) {
+        MenuItem selectedTypeItem = (MenuItem) event.getSource();
+        String selectedType = selectedTypeItem.getText();
+        try {
+            ObservableList<Pair<String, Integer>> counts = reportDAO.getAppointmentMonthByType(selectedType);
+            System.out.println(counts);
+            populateAppointmentTypeMonthTable(counts);
+        } catch (SQLException ex) {
+            // Handle exception
+        }
+    }
+
+    /**
+     * Populates the appointment by type and month table view. It sets the data and configures
+     * the cell value factories for each column.
+     * @param counts a list of pairs where each pair represents a month and its corresponding appointment count.
+     */
+    @FXML
+    private void populateAppointmentTypeMonthTable(ObservableList<Pair<String, Integer>> counts) {
+        String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+        ObservableList<Pair<String, Integer>> data = FXCollections.observableArrayList();
+
+        int totalCount = 0;
+
+        for (String month : months) {
+            int monthCount = 0;
+            for (Pair<String, Integer> count : counts) {
+                if (count.getKey().equals(month)) {
+                    monthCount = count.getValue();
+                    break;
+                }
+            }
+            totalCount += monthCount;
+            data.add(new Pair<>(month, monthCount));
+        }
+        data.add(new Pair<>("TOTAL", totalCount));
+
+        appointmentTypeMonthTable.setItems(data);
 
         monthColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKey()));
         totalByMonthColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getValue()).asObject());
-
-        appointmentMonthTable.setItems(monthsData);
     }
 
     /**
@@ -193,8 +228,22 @@ public class ReportsController {
      * Handles the action of the exit button click, closing the current stage.
      */
     @FXML
-    private void handleExitClick(){
-        Stage stage = (Stage) exitButton.getScene().getWindow();
-        stage.close();
+    private void handleExitClick() {
+        try {
+            Stage currentStage = (Stage) exitButton.getScene().getWindow();
+            currentStage.close();
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("mainScreen.fxml"));
+            Parent mainScreenRoot = loader.load();
+
+            Stage mainScreenStage = new Stage();
+            mainScreenStage.setTitle("Main Screen");
+            mainScreenStage.setScene(new Scene(mainScreenRoot));
+            mainScreenStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
+
+

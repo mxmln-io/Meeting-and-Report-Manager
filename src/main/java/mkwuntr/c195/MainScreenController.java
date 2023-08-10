@@ -74,6 +74,9 @@ public class MainScreenController {
     @FXML
     private void handleAppointmentsClick() {
         try {
+            Stage currentStage = (Stage) appointmentsButton.getScene().getWindow();
+            currentStage.close();
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("appointmentScreen.fxml"));
             Parent appointmentsRoot = loader.load();
 
@@ -86,12 +89,16 @@ public class MainScreenController {
         }
     }
 
+
     /**
      * Opens the Customers screen.
      */
     @FXML
     private void handleCustomersClick() {
         try {
+            Stage currentStage = (Stage) customersButton.getScene().getWindow();
+            currentStage.close();
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("customerScreen.fxml"));
             Parent customersRoot = loader.load();
 
@@ -110,6 +117,9 @@ public class MainScreenController {
     @FXML
     private void handleReportsClick() {
         try {
+            Stage currentStage = (Stage) reportsButton.getScene().getWindow();
+            currentStage.close();
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("reports.fxml"));
             Parent reportsRoot = loader.load();
 

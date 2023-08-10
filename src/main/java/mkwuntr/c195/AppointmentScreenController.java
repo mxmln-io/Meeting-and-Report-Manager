@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * Controller for the Appointment Screen which handles the CRUD operations for appointments.
@@ -94,7 +95,8 @@ public class AppointmentScreenController {
      * This method sets up the table columns, radio buttons, and initial set of appointments.
      * It uses a lambda expression to efficiently populate the contact name column
      * based on the contact ID from the Appointment object.
-     *
+     * A lambda expression has also been added to improve the code structure for
+     * the radio buttons when selecting a date range.
      * @throws SQLException if database operations fail.
      */
     @FXML
@@ -134,28 +136,19 @@ public class AppointmentScreenController {
         // Set default selection
         allDatesRadioButton.setSelected(true);
 
-        // Add listeners to the radio buttons
-        allDatesRadioButton.setOnAction(event -> {
+        // Add listeners to the radio buttons. Lambda function has been added
+        Consumer<RadioButton> setRadioButtonAction = radioButton -> radioButton.setOnAction(event -> {
             try {
                 filterAppointments();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         });
-        weekRadioButton.setOnAction(event -> {
-            try {
-                filterAppointments();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        monthRadioButton.setOnAction(event -> {
-            try {
-                filterAppointments();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        });
+
+        setRadioButtonAction.accept(allDatesRadioButton);
+        setRadioButtonAction.accept(weekRadioButton);
+        setRadioButtonAction.accept(monthRadioButton);
+
 
         // Load the initial set of appointments
         filterAppointments();
@@ -288,8 +281,20 @@ public class AppointmentScreenController {
      * Closes the appointment screen.
      */
     @FXML
-    private void handleExitClick(){
-        Stage stage = (Stage) exitButton.getScene().getWindow();
-        stage.close();
+    private void handleExitClick() {
+        try {
+            Stage currentStage = (Stage) exitButton.getScene().getWindow();
+            currentStage.close();
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("mainScreen.fxml"));
+            Parent mainScreenRoot = loader.load();
+
+            Stage mainScreenStage = new Stage();
+            mainScreenStage.setTitle("Main Screen");
+            mainScreenStage.setScene(new Scene(mainScreenRoot));
+            mainScreenStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
