@@ -1,29 +1,11 @@
 -------------------------------------------------------------------------------
-                              C195 CLIENT SCHEDULE APPLICATION
+                              CLIENT SCHEDULING APPLICATION
 -------------------------------------------------------------------------------
 
-Title:
-C195 Client Schedule Application
-
-Purpose:
 This application is designed to manage client schedules, track user activity, and generate various reports for administrative purposes.
 
 -------------------------------------------------------------------------------
 
-Author:
-Maximillian Kwun-Tran
-
-Contact Information:
-Email: mkwuntr@wgu.edu
-Phone: 209-770-2007
-
-Version:
-Student Application Version: 1.0
-
-Date:
-[July 30, 2023]
-
--------------------------------------------------------------------------------
 
 Development Environment:
 
